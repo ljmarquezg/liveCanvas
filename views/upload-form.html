@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Subir Imágen
+{% endblock %}
+
+{% block canvasmenu %}
+<li>
+    <a href="/canvas">
+        <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Ir al canvas">brush</i>
+    </a>
+</li>
+
+<li>
+    <a href="/gallery">
+        <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Mostrar Galería">view_module</i>
+    </a>
+</li>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <h2 class="center">Seleccione una imágen para el fondo de pantalla</h2>
+        <form ref='uploadForm' id='uploadForm' action='/upload-form' method='post' encType="multipart/form-data">
+
+            <div class="input-field col s6">
+                <input placeholder="Cambiar nombre archivo" name="name" id="name" type="text" class="validate">
+                <label for="name">Nombre de archivo</label>
+            </div>
+
+            <div class="col m6">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>File</span>
+                        <input type="file" name="uploadFile"/>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" name="file_path">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn waves-effect waves-light right" type="submit" name="action">Cargar Imagen
+            </button>
+        </form>
+
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/js/gallery.js"></script>
+{% endblock %}

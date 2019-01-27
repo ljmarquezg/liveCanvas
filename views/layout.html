@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+
+{% block layoutcontent %}
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper blue-grey darken-4">
+            <a href="#!" class="brand-logo"><i class="material-icons">cloud</i>Logo</a>
+            <ul class="right hide-on-med-and-down">
+                {% block canvasmenu %}
+                {% endblock %}
+                <li>
+                    <a href="/upload-form" class="waves-effect waves-light btn"><i class="material-icons left">file_upload</i>Cargar
+                        Imágen</a>
+                </li>
+                <li>
+                    <a href="#logout" class="flex-item tooltipped" data-position="bottom"
+                       data-tooltip="Cerrar Sesión">
+                        <i class="material-icons prefix modal-trigger" href="#logout">exit_to_app</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+{% block content %}
+
+{% endblock %}
+
+<div id="logout" class="modal">
+    <div class="modal-content">
+        <h3 class="header"><i class="material-icons prefix">exit_to_app</i> Cerrar sesión</h3>
+        <p>¿Estás seguro que deseas cerrar sesión?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+        <a href="/logout" class="modal-close waves-effect waves-green btn">Cerrar sesión</a>
+    </div>
+
+</div>
+
+{% endblock %}

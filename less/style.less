@@ -1,0 +1,197 @@
+@menuHeight: 70px;
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  display: block;
+  padding: 0;
+}
+
+.row {
+  .col {
+    &.draw {
+      display: inline-block;
+      margin-top: @menuHeight;
+      padding: 0;
+      height: 100%;
+      position: relative;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    &.control {
+      height: @menuHeight;
+      width: 100%;
+      display: inline-block;
+      position: fixed;
+      .list-group {
+        position: fixed;
+      }
+      h2 {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+nav {
+  z-index: 9999;
+  .nav-wrapper {
+    z-index: 9999;
+    position: relative;
+    ul {
+      li {
+        position: relative;
+      }
+    }
+  }
+}
+
+.submenu {
+  display: none;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0 5%;
+}
+
+ul.collection {
+  overflow: visible;
+  li.collection-item {
+    padding: 30px;
+    justify-content: space-around;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    .flex-item {
+      width: 100%
+    }
+    span {
+      &.first {
+        flex-direction: column;
+        float: none;
+        flex: 1;
+        width: 100%;
+      }
+      &.second {
+        width: 60px;
+        padding: 0;
+        border: 1px solid #e2e2e2;
+        display: flex;
+        height: 60px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 30px;
+      }
+    }
+  }
+}
+
+#slider-range {
+  width: 100%;
+  background: gray;
+  height: 5px;
+  border-radius: 50px;
+  .ui-slider-horizontal .ui-slider-handle {
+
+  }
+  .noUi-handle
+  {
+    border-radius: 50%;
+    background-color: #26a69a;
+    top: -8px;
+    width: 20px;
+    height: 20px;
+    box-shadow: none;
+    border: solid 2px #26a69a;
+    cursor: pointer;
+    &.noUi-active{
+      box-shadow: 0px 2px 5px;
+      border: solid 2px #1d7b73;
+    }
+  }
+  .noUi-handle:after, .noUi-handle:before{
+    content: none;
+  }
+}
+
+span {
+  position: relative;
+  text-align: center;
+}
+
+input.jscolor {
+  display: inline-block;
+  position: relative;
+  height: 100%;
+  opacity: 1;
+  cursor: pointer;
+  border-bottom: none;
+  width: 75px;
+  text-align: center;
+}
+
+.flex-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.content {
+  overflow: hidden;
+  border-radius: 0px;
+  height: 100%;
+  width: 100%;
+  background-color: #e2e2e2;
+  margin: auto;
+  position: relative;
+}
+
+#canvas {
+
+}
+
+.js-toggle-show {
+  display: none;
+}
+
+.list-group-item {
+  margin: auto;
+}
+
+.controller {
+  .left {
+    width: 50%;
+  }
+  .right {
+    left: 50%;
+  }
+
+}
+
+.pointervalue{
+  position: absolute;
+  top: 32px;
+  margin: 0;
+  padding: 0;
+  border: solid 1.5px;
+  border-radius: 50%;
+  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  font-size: 10px;
+  color: white;
+  line-height: 16px;
+  right: 5px;
+}
+
+.card{
+  .card-image{
+    height:220px;
+    overflow: hidden;
+  }
+}

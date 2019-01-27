@@ -1,0 +1,69 @@
+﻿{% extends 'layout.html' %}
+
+{% block title %}
+Live Canvas
+{% endblock %}
+
+{% block canvasmenu %}
+<li>
+    <a class="js-refresh  tooltipped" data-position="bottom" data-tooltip="Reiniciar">
+        <i class="material-icons">refresh</i>
+    </a>
+</li>
+<li>
+    <a class="flex-item tooltipped" data-position="bottom" data-tooltip="Seleccionar Color">
+        <i id="jscolortrigger" class="color-picker material-icons" onclick="">color_lens</i>
+        <input id="jscolor" class="jscolor {onFineChange:'update(this)'}" value="263238">
+    </a>
+</li>
+<li>
+    <a class="flex-itemtooltiped" data-position="bottom" data-tooltip="Grosor de lápiz">
+        <i class="material-icons prefix modal-trigger" href="#pencilOption">border_color</i>
+        <span class="pointervalue blue-grey darken-4"></span>
+    </a>
+</li>
+<li>
+    <a id="pasteImage" class="tooltipped" id="canvasimage" data-position="bottom"
+       data-tooltip="Pegar Imágen en canvas">
+        <i class="material-icons">photo_size_select_large</i>
+    </a>
+</li>
+<li>
+    <a href="/gallery" class="tooltipped" data-position="bottom" data-tooltip="Mostrar Galería">
+        <i class="material-icons">view_module</i>
+    </a>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="col  draw content">
+    <canvas id="canvas"></canvas>
+</div>
+<!-- Modal Structure -->
+<div id="pencilOption" class="modal bottom-sheet">
+    <div class="modal-content">
+        <h3 class="header"><i class="material-icons prefix">adjust</i> Grosor de línea</h3>
+        <ul class="collection">
+            <li class="collection-item">
+                <div class="flex-item">
+                    <span class="first">
+                        <p class="title">Desplace a la derecha o izquierda y seleccione el grosor del pincél</p>
+                        <!--div id="slider"></div-->
+                        <div id="slider-range"></div>
+                    </span>
+                    <span class="second"><div class="actualsize"></div></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<img id="canvasimg" class="hidden" src="" alt="">
+{% endblock %}
+
+
+{% block scripts %}
+<script src="/js/canvas.js"></script>
+<script src="/js/wNumb.js"></script>
+<script src="/js/nouislider.min.js"></script>
+{% endblock %}
