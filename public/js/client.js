@@ -5,6 +5,7 @@ var usuario = {
 //}
     }
 ;
+
 var show = false;
 
 socket.emit('new user', usuario);
@@ -22,6 +23,7 @@ $(document).on('mousedown', function (e) {
         enabled: true,
     };
 });
+
 $(document).on('click', '#jscolortrigger', function(){
     document.getElementById('jscolor').jscolor.show();
 });
@@ -62,17 +64,6 @@ $(document).on('mouseup', '#canvas', function (e) {
     socket.emit('drawing', {mouseEvents});
 });
 
-$(document).on('click','.js-toggler', function(){
-    $('.submenu').slideDown('slow');
-    var target = $(this).data('target');
-    console.log(target);
-    if($(target).hasClass('visible')){
-        $(target).removeClass('visible').hide('slow');
-    }else{
-        $(target).addClass('visible').show('slow');
-    }
-    console.log($(target));
-});
 
 $('#form').submit(function (event) {
     socket.emit('chat message', {usuario: usuario, mensaje: $('#message').val()});
@@ -85,8 +76,33 @@ socket.on('chat message', function (msg) {
 });
 
 socket.on('new user', function (usuarios) {
-    $('#cuerpo-online').html('');
     $.each(usuarios, function (i, usuario) {
+        $('.footer').append(
+        '<div class="col s12 m8 offset-m2 l6 offset-l3">'+
+            '<div class="card-panel grey lighten-5 z-depth-1">'+
+            '<div class="row valign-wrapper">'+
+            '<div class="col s2">'+
+            '<img src="images/yuna.jpg" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->'+
+        '</div>'+
+        '<div class="col s10">'+
+            '<span class="black-text">'+
+            usuario +
+        '</span>'+
+        '</div>'+
+        '</div>'+
+        '</div>'+
+        '</div>'
+        )
         $('#cuerpo-online').append($('<li>').text(usuario));
     });
+});
+
+socket.on('show user', function(user){
+    $('.username').text(user);
+});
+
+socket.on('load image', function(img){
+   console.log('load image triggered');
+   console.log(img);
+    $('#canvasimg').attr('src', img);
 });

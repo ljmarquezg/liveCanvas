@@ -111,10 +111,6 @@ function storeDrawing(usuario, mouseEvents) {
 }
 
 function storeMessages(usuario, mensaje) {
-    //var dato = JSON.stringify();
-    /*client.lpush("mensajes", dato, function (err, response){
-      client.ltrim("mensajes", 0, 10);
-    });*/
     var objeto = new Mensaje({usuario: usuario, mensaje: mensaje});
     objeto.save(function (err, mensaje) {
         if (err) {
@@ -122,10 +118,10 @@ function storeMessages(usuario, mensaje) {
         }
         console.log(mensaje);
     });
-
 }
 
 io.on('connection', function (socket) {
+
     socket.on('disconnect', function () {
         console.log('user disconnected');
         client.hdel("usuarios", socket.id);
@@ -173,6 +169,7 @@ io.on('connection', function (socket) {
                     socket.emit('chat message', mensaje);
                 });
             });
+
     });
 
     socket.on('get gallery', function (gallery) {
@@ -202,6 +199,15 @@ io.on('connection', function (socket) {
                     });
                 }
             });
+        });
+    });
+
+    socket.on('canvas img', function(img){
+        socket.emit('canvas img', img);
+        client.hset("canvasimg", socket.id.toString(), img);
+        client.hgetall("canvasimg", function (err, img) {
+            socket.emit('load image', img);
+            console.log(img)
         });
     });
 });

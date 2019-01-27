@@ -32,10 +32,19 @@ $(document).ready(function () {
         $('#gallery').html(cards);
     });
 
-    $(document).on('click', '.imgtocanvas', function () {
+    $(document).on('click', '.imgtocanvas', function (e) {
+        e.preventDefault();
         var $this = $(this);
-        var card = $this.closest(card);
+        console.log($this)
+        var card = $this.closest('.card');
         var imgURL = card.find('img').attr('src');
         socket.emit('canvas img', {image: imgURL});
+
+        socket.on('load image', function(img){
+            console.log('load image triggered');
+            console.log(img);
+            $('#canvasimg').attr('src', img);
+        });
+
     });
 });

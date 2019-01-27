@@ -25,11 +25,16 @@ var rutas = function (app) {
     });
 
     app.get('/canvas', function (req, res) {
+        console.log(req.body);
         checkAuthenticated(req, res, 'index');
     });
 
     app.get('/error', function (req, res) {
         res.send(req.session.flash.error[0]);
+    });
+
+    app.get('/gallery', function (req, res) {
+        checkAuthenticated(req, res, 'gallery');
     });
 
     app.post('/registro', usuario.registro, function (req, res) {
@@ -43,11 +48,6 @@ var rutas = function (app) {
 
     app.get('/upload-form', function (req, res) {
         checkAuthenticated(req, res, 'upload-form');
-    });
-
-
-    app.get('/gallery', function (req, res) {
-        checkAuthenticated(req, res, 'gallery');
     });
 
     app.post('/upload-form', function (req, res) {
