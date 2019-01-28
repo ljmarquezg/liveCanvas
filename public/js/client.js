@@ -24,7 +24,7 @@ $(document).on('mousedown', function (e) {
     };
 });
 
-$(document).on('click', '#jscolortrigger', function(){
+$(document).on('click', '#jscolortrigger', function () {
     document.getElementById('jscolor').jscolor.show();
 });
 
@@ -49,7 +49,7 @@ $(document).on('mousemove', '#canvas', function (e) {
     }
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
     $('.tooltipped').tooltip();
     $('.modal').modal();
 });
@@ -76,7 +76,7 @@ socket.on('chat message', function (msg) {
 });
 
 socket.on('new user', function (usuarios) {
-    $.each(usuarios, function (i, usuario) {
+    /*$.each(usuarios, function (i, usuario) {
         $('.footer').append(
         '<div class="col s12 m8 offset-m2 l6 offset-l3">'+
             '<div class="card-panel grey lighten-5 z-depth-1">'+
@@ -94,15 +94,36 @@ socket.on('new user', function (usuarios) {
         '</div>'
         )
         $('#cuerpo-online').append($('<li>').text(usuario));
-    });
+    });*/
 });
 
-socket.on('show user', function(user){
-    $('.username').text(user);
+socket.on('show user', function (user) {
+    if (user.length > 0) {
+        var elemUsuario = user.slice(-1)[0];
+        var nombre = elemUsuario.nombre;
+        var username = elemUsuario.usuario;
+        var img = elemUsuario.image;
+        var popup = $('.popup');
+        $('.username').append(
+            '<div class="card-panel grey lighten-5 z-depth-1">' +
+            '<div class="row valign-wrapper"><div class="profile">' +
+            '<img src="' + img + '" alt="" class="circle responsive-img">' +
+            '</div>' +
+            '<div class="col s10">' +
+            '<p class="black-text"><b>' + nombre + '</b></p>' +
+            '<span class="small">Ha iniciado sesión</span>'+
+            '</div></div>' +
+            '</div>'
+        );
+       popup.fadeIn();
+        setTimeout(function(){
+            popup.fadeOut();
+        }, 3000)
+    }
 });
 
-socket.on('load image', function(img){
-   console.log('load image triggered');
-   console.log(img);
+socket.on('load image', function (img) {
+    console.log('load image triggered');
+    console.log(img);
     $('#canvasimg').attr('src', img);
 });

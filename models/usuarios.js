@@ -7,7 +7,8 @@ var usuariosSchema = new Schema({
 	nombre : String,
 	usuario : String,
 	password : String,
-	twitter : String
+	twitter : String,
+    image: String
 });
 
 //usuariosSchema.set('redisCache', true);

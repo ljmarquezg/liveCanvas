@@ -38,6 +38,7 @@ var rutas = function (app) {
     });
 
     app.post('/registro', usuario.registro, function (req, res) {
+        console.log(req.files);
         res.redirect('/');
     });
 

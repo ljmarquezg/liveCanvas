@@ -8,7 +8,8 @@ var localConnection = function (app) {
 
     passport.use('user', new LocalStrategy({
             usernameField: 'usuario',
-            passwordField: 'password'
+            passwordField: 'password',
+            image: 'image'
         },
         function (username, password, done) {
             Usuario.findOne({usuario: username}, function (err, user) {

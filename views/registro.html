@@ -1,23 +1,40 @@
 {% extends 'forms.html' %}
 
 {% block titulo %}
-	Registro de usuarios
+Registro de usuarios
 {% endblock %}
 
 {% block form %}
-<form role="form" action="/registro" method="POST">
-	<div class="form-group">
-		 <label for="exampleInputEmail1">Nombre Completo</label><input type="text" name="nombre" class="form-control" id="exampleInputEmail1">
-	</div>
-	<div class="form-group">
-		 <label for="exampleInputEmail1">Edad</label><input type="text" name="edad" class="form-control" id="exampleInputEmail1">
-	</div>
-	<div class="form-group">
-		 <label for="exampleInputEmail1">Nombre de usuario</label><input type="text" name="usuario" class="form-control" id="exampleInputEmail1">
-	</div>
-	<div class="form-group">
-		 <label for="exampleInputPassword1">Password</label><input type="password" name="pass" class="form-control" id="exampleInputPassword1">
-	</div>
-	<button type="submit" class="btn btn-default">Submit</button>
+<form role="form" action="/registro" method="POST" encType="multipart/form-data">
+    <div class="form-group">
+        <label for="nombre">Nombre Completo</label><input type="text" name="nombre" class="form-control"
+                                                                      id="nombre">
+    </div>
+    <div class="form-group">
+        <label for="email">Edad</label><input type="text" name="edad" class="form-control"
+                                                           id="email">
+    </div>
+    <div class="form-group">
+        <label for="usuario">Nombre de usuario</label><input type="text" name="usuario" class="form-control"
+                                                                        id="usuario">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label><input type="password" name="pass" class="form-control"
+                                                                  id="password">
+    </div>
+
+    <div class="col m12">
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Subir Imagen</span>
+                <input type="file" name="uploadFile"/>
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" name="file_path">
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-default">Submit</button>
 </form>
 {% endblock %}

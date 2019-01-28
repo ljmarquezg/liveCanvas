@@ -2,7 +2,6 @@ var port = 3000;
 var express = require('express');
 var app = express();
 var fs = require('fs');
-var url = require('url');
 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -72,6 +71,7 @@ app.use(flash());
 
 passport.serializeUser(function (user, done) {
     console.log("Serialize: " + user);
+    usuarios.push(user);
     done(null, user);
 });
 
@@ -154,10 +154,13 @@ io.on('connection', function (socket) {
 
     socket.on('new user', function (nombre) {
         console.log(socket.id);
+
         client.hset("usuarios", socket.id.toString(), nombre);
         client.hgetall("usuarios", function (err, usuarios) {
             io.emit('new user', usuarios);
         });
+
+        socket.emit('show user', usuarios);
 
         Mensaje.find({})
             .exec(function (err, mensajes) {
