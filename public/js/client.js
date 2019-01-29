@@ -9,24 +9,12 @@ var usuario = {
 var show = false;
 
 socket.emit('new user', usuario);
-socket.emit('get gallery');
 
 window.onload = function () {
     var elems = document.querySelectorAll("input[type=range]");
     M.Range.init(elems);
 };
 
-$(document).on('mousedown', function (e) {
-    mouseEvents = {
-        posX: e.clientX,
-        posY: e.clientY,
-        enabled: true,
-    };
-});
-
-$(document).on('click', '#jscolortrigger', function () {
-    document.getElementById('jscolor').jscolor.show();
-});
 
 
 function update(jscolor) {
@@ -36,33 +24,12 @@ function update(jscolor) {
     color = selectedColor;
 }
 
-$(document).on('mousemove', '#canvas', function (e) {
-    if (mouseEvents.enabled === true) {
-        mouseEvents = {
-            posX: e.clientX,
-            posY: e.clientY,
-            enabled: true,
-            drawing: true,
-            color: color
-        }
-        socket.emit('drawing', {mouseEvents});
-    }
-});
 
 $(document).ready(function () {
     $('.tooltipped').tooltip();
     $('.modal').modal();
 });
 
-$(document).on('mouseup', '#canvas', function (e) {
-    mouseEvents = {
-        posX: e.clientX,
-        posY: e.clientY,
-        drawing: false,
-        enabled: false
-    }
-    socket.emit('drawing', {mouseEvents});
-});
 
 
 $('#form').submit(function (event) {
@@ -98,32 +65,29 @@ socket.on('new user', function (usuarios) {
 });
 
 socket.on('show user', function (user) {
-    if (user.length > 0) {
+    if (user.length > 0 && show === false) {
         var elemUsuario = user.slice(-1)[0];
         var nombre = elemUsuario.nombre;
         var username = elemUsuario.usuario;
         var img = elemUsuario.image;
         var popup = $('.popup');
-        $('.username').append(
+        var username = $('.username');
+        username.append(
             '<div class="card-panel grey lighten-5 z-depth-1">' +
             '<div class="row valign-wrapper"><div class="profile">' +
             '<img src="' + img + '" alt="" class="circle responsive-img">' +
             '</div>' +
             '<div class="col s10">' +
             '<p class="black-text"><b>' + nombre + '</b></p>' +
-            '<span class="small">Ha iniciado sesión</span>'+
+            '<span class="small">Ha iniciado sesión</span>' +
             '</div></div>' +
             '</div>'
         );
-       popup.fadeIn();
-        setTimeout(function(){
+        popup.fadeIn();
+        setTimeout(function () {
             popup.fadeOut();
+            username.html('');
         }, 3000)
+        show = true;
     }
-});
-
-socket.on('load image', function (img) {
-    console.log('load image triggered');
-    console.log(img);
-    $('#canvasimg').attr('src', img);
 });

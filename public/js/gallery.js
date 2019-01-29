@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    socket.emit('get gallery');
+
     socket.on('get gallery', function (gallery) {
         var cards = '<div class="col s12 m4">';
         cards += '<div class="card">';

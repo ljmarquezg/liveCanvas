@@ -129,7 +129,8 @@ io.on('connection', function (socket) {
 
     socket.on('drawing', function (cords) {
         console.log(cords);
-    })
+        io.emit('update canvas', cords);
+    });
 
     socket.on('chat message', function (msj) {
         var match = /@([^@]+)@/.exec(msj.mensaje);
@@ -160,7 +161,7 @@ io.on('connection', function (socket) {
             io.emit('new user', usuarios);
         });
 
-        socket.emit('show user', usuarios);
+        //io.emit('show user', usuarios);
 
         Mensaje.find({})
             .exec(function (err, mensajes) {
@@ -172,6 +173,9 @@ io.on('connection', function (socket) {
                     socket.emit('chat message', mensaje);
                 });
             });
+
+            //io.emit('show user', usuarios);
+            socket.broadcast.emit('show user', usuarios);
 
     });
 
