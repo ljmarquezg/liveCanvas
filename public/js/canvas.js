@@ -11,18 +11,20 @@ let canvas = 0,
     currY = 0,
     dot_flag = false,
     color = $('#jscolor').attr('value'),
-    nav = $('nav').outerHeight();
+    nav = $('nav').outerHeight(),
 
-mouseEvents = {
-    posPrevX: 0,
-    posPrevY: 0,
-    posX: 0,
-    posY: 0,
-    enabled: false,
-    color: color,
-    pencilWidth: pencilWidth
-}
+    mouseEvents = {
+        prevX: 0,
+        prevY: 0,
+        posX: 0,
+        posY: 0,
+        enabled: false,
+        color: color,
+        pencilWidth: pencilWidth,
+        drawing: false,
+    },
 
+    me = mouseEvents;
 
 $(window).on('load', function () {
     canvas = document.getElementById('canvas');
@@ -39,9 +41,11 @@ $(window).on('load', function () {
 
 $(document).on('mousedown', function (e) {
     var me = mouseEvents;
-    me.posPrevX= e.clientX;
-    me.posPrevY= e.clientY;
-    me.enabled= true;
+    me.prevX = e.clientX;
+    me.prevY = e.clientY;
+    me.posX = me.prevX;
+    me.posY = me.prevY;
+    me.enabled = true;
     socket.emit('drawing', {mouseEvents});
     updateCanvas();
 });
@@ -49,28 +53,30 @@ $(document).on('mousedown', function (e) {
 
 $(document).on('mousemove', '#canvas', function (e) {
     if (mouseEvents.enabled === true) {
-        var me = mouseEvents;
-        mouseEvents = {
-            posX: e.clientX,
-            posY: e.clientY,
-            enabled: true,
-            drawing: true,
-            color: color,
-            pencilWidth: pencilWidth
-        }
+        me.prevY = me.posX;
+        me.posX = e.clientX;
+        me.posY = e.clientY;
+        me.enabled = true;
+        me.drawing = true;
+        me.color = color;
+        me.pencilWidth = pencilWidth;
         socket.emit('drawing', {mouseEvents});
         updateCanvas();
     }
-});
+})
+;
 
 
 $(document).on('mouseup', '#canvas', function (e) {
-    mouseEvents = {
-        posX: e.clientX,
-        posY: e.clientY,
-        drawing: false,
-        enabled: false
-    }
+
+    me.prevX= e.clientX;
+    me.prevY = e.clientY;
+    me.posX = me.prevX;
+    me.posY = me.prevY;
+
+    me.drawing = false;
+    me.enabled = false;
+
     socket.emit('drawing', {mouseEvents});
 });
 
@@ -154,12 +160,12 @@ function updatePencilWidth(value) {
 
 function getPosition(action, e) {
     if (action == 'down') {
-        mouseEvents = {
-            prevX: currX,
-            prevY: currY,
-            currX: e.clientX - canvas.offsetLeft,
-            currY: e.clientY - nav - canvas.offsetTop
-        };
+
+        me.prevX = currX;
+        me.prevY = currY;
+        me.posX = e.clientX - canvas.offsetLeft;
+        me.posY = e.clientY - nav - canvas.offsetTop;
+
         prevX = currX;
         prevY = currY;
         currX = e.clientX - canvas.offsetLeft;
@@ -180,20 +186,19 @@ function getPosition(action, e) {
     }
     if (action == 'move') {
         if (flag) {
-            mouseEvents = {
-                prevX: currX,
-                prevY: currY,
-                currX: e.clientX - canvas.offsetLeft,
-                currY: e.clientY - nav - canvas.offsetTop
-            };
-
-            prevX = currX;
-            prevY = currY;
-            currX = e.clientX - canvas.offsetLeft;
-            currY = e.clientY - nav - canvas.offsetTop;
-            draw();
+            me.prevX = currX;
+            me.prevY = currY;
+            me.posX = e.clientX - canvas.offsetLeft;
+            me.posY = e.clientY - nav - canvas.offsetTop;
         }
+
+        prevX = currX;
+        prevY = currY;
+        currX = e.clientX - canvas.offsetLeft;
+        currY = e.clientY - nav - canvas.offsetTop;
+        draw();
     }
+
 }
 
 function draw() {
@@ -212,7 +217,7 @@ function updateCanvas() {
         console.log(draw);
         var e = draw.mouseEvents;
         canvasActions.beginPath();
-        canvasActions.moveTo(e.posPrevX, e.posPrevY);
+        canvasActions.moveTo(e.prevX, e.prevY);
         canvasActions.lineTo(e.posX, e.posY);
         canvasActions.strokeStyle = e.color;
         canvasActions.lineWidth = e.pencilWidth;
