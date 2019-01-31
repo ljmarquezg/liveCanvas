@@ -3,14 +3,15 @@ $(document).ready(function () {
 
     socket.on('get gallery', function (gallery) {
         var cards = '<div class="col s12 m4">';
-        cards += '<div class="card">';
+        cards += '<div class="card active">';
         cards += '<div class="card-image">';
         cards += '<img src="./img/emptycanvas.jpg">';
         cards += '</div>';
         cards += '<div class="card-content">';
         cards += '<p>Sin imágen de fondo</p>';
         cards += '</div>';
-        cards += '<div class="card-action"><a href="#" class="imgtocanvas">Seleccionar Imágen</a></div>';
+        cards += '<div class="card-action link"><a href="#" class="imgtocanvas">Seleccionar Imágen</a></div>';
+        cards += '<div class="card-action select"><a href="/canvas" class="btn">Ir al canvas</a></div>';
         cards += '</div>';
         cards += '</div>';
 
@@ -23,7 +24,8 @@ $(document).ready(function () {
             cards += '<div class="card-content">';
             cards += '<p>' + file.name + '</p>';
             cards += '</div>';
-            cards += '<div class="card-action"><a href="#" class="imgtocanvas">Seleccionar Imágen</a></div>';
+            cards += '<div class="card-action link"><a href="#" class="imgtocanvas">Seleccionar Imágen</a></div>';
+            cards += '<div class="card-action select"><a href="/canvas" class="btn">Ir al canvas</a></div>';
             cards += '</div>';
             cards += '</div>';
         });
@@ -34,19 +36,15 @@ $(document).ready(function () {
         $('#gallery').html(cards);
     });
 
+
     $(document).on('click', '.imgtocanvas', function (e) {
         e.preventDefault();
+        var activeClass = 'z-depth-3 active';
         var $this = $(this);
-        console.log($this)
         var card = $this.closest('.card');
-        var imgURL = card.find('img').attr('src');
-        socket.emit('canvas img', {image: imgURL});
-
-        socket.on('load image', function(img){
-            console.log('load image triggered');
-            console.log(img);
-            $('#canvasimg').attr('src', img);
-        });
-
+        var imgURL = $this.closest('.card').find('.card-image img').attr('src');
+        $('.card').removeClass(activeClass);
+        card.addClass(activeClass);
+        socket.emit('save img', imgURL);
     });
 });

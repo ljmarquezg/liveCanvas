@@ -20,7 +20,7 @@ window.onload = function () {
 function update(jscolor) {
     var selectedColor = '#' + jscolor;
     $('.color-picker').parent().css({'background-color': selectedColor});
-    document.getElementById('jscolor').jscolor.hide();
+    //document.getElementById('jscolor').jscolor.hide();
     color = selectedColor;
 }
 
@@ -30,20 +30,9 @@ $(document).ready(function () {
     $('.modal').modal();
 });
 
-
-
-$('#form').submit(function (event) {
-    socket.emit('chat message', {usuario: usuario, mensaje: $('#message').val()});
-    $('#message').val('');
-    return false;
-});
-
-socket.on('chat message', function (msg) {
-    $('#cuerpo-chat').append($('<li>').html('<strong>' + msg.usuario + '</strong>: ' + msg.mensaje));
-});
-
 socket.on('new user', function (usuarios) {
-    /*$.each(usuarios, function (i, usuario) {
+    console.log(usuarios);
+    $.each(usuarios, function (i, usuario) {
         $('.footer').append(
         '<div class="col s12 m8 offset-m2 l6 offset-l3">'+
             '<div class="card-panel grey lighten-5 z-depth-1">'+
@@ -61,7 +50,7 @@ socket.on('new user', function (usuarios) {
         '</div>'
         )
         $('#cuerpo-online').append($('<li>').text(usuario));
-    });*/
+    });
 });
 
 socket.on('show user', function (user) {
@@ -90,4 +79,15 @@ socket.on('show user', function (user) {
         }, 3000)
         show = true;
     }
+});
+
+socket.on('show selected', function(img){
+    console.log(img);
+    app.get('/canvas', function(req, res){
+       req.render('canvas', {'mensaje': 'test'});
+    });
+});
+
+socket.on('user disconnected', function(user){
+
 });

@@ -193,7 +193,39 @@ input.jscolor {
   .card-image{
     height:220px;
     overflow: hidden;
+    height: 220px;
+    overflow: hidden;
+    display: flex;
+    object-fit: cover;
+    flex-flow: row;
   }
+
+  .card-image img {
+    border-radius: 2px 2px 0 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .imgtocanvas{
+    line-height: 36px;
+  }
+  .select{
+    display:none;
+  }
+  .link{
+    display:block;
+  }
+
+  &.active{
+    .select{
+      display:block;
+    }
+    .link{
+      display:none;
+    }
+  }
+
 }
 
 .popup{

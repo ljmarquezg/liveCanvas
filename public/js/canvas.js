@@ -10,10 +10,11 @@ let canvas = 0,
     prevY = 0,
     currY = 0,
     dot_flag = false,
+    canvasimg = null,
     color = $('#jscolor').attr('value'),
     nav = $('nav').outerHeight(),
 
-    mouseEvents = {
+    mouseEvents = new MouseEvent({
         prevX: 0,
         prevY: 0,
         posX: 0,
@@ -22,7 +23,7 @@ let canvas = 0,
         color: color,
         pencilWidth: pencilWidth,
         drawing: false,
-    },
+    }),
 
     me = mouseEvents;
 
@@ -37,7 +38,7 @@ $(window).on('load', function () {
 });
 
 
-//EVENTS ===========================================
+//================ MOUSEEVENTS ===============
 
 $(document).on('mousedown', function (e) {
     var me = mouseEvents;
@@ -46,8 +47,6 @@ $(document).on('mousedown', function (e) {
     me.posX = me.prevX;
     me.posY = me.prevY;
     me.enabled = true;
-    socket.emit('drawing', {mouseEvents});
-    updateCanvas();
 });
 
 
@@ -60,24 +59,19 @@ $(document).on('mousemove', '#canvas', function (e) {
         me.drawing = true;
         me.color = color;
         me.pencilWidth = pencilWidth;
-        socket.emit('drawing', {mouseEvents});
-        updateCanvas();
     }
 })
 ;
 
 
 $(document).on('mouseup', '#canvas', function (e) {
-
-    me.prevX= e.clientX;
+    me.prevX = e.clientX;
     me.prevY = e.clientY;
     me.posX = me.prevX;
     me.posY = me.prevY;
-
     me.drawing = false;
     me.enabled = false;
 
-    socket.emit('drawing', {mouseEvents});
 });
 
 
@@ -86,7 +80,7 @@ $(document).on('click', '#jscolortrigger', function () {
 });
 
 
-//================= Funciones ===============
+//================= Functions ===============
 
 function init() {
     var slider = document.getElementById('slider-range');
@@ -123,6 +117,7 @@ function init() {
         });
         $(document).on("mouseout", canvas, function (e) {
             getPosition('out', e)
+            console.log("mouse out")
         });
     });
 
@@ -134,10 +129,21 @@ function init() {
         pasteImage();
     });
 
+
+    if ($('#canvasimg').length === 0){
+        var img = document.createElement("img");
+        img.setAttribute("id", "canvasimg");
+        img.setAttribute("style", "display: none; opacity: 0; position: absolute; left: -100%");
+        document.getElementById('main').appendChild(img);
+        canvasimg = document.getElementById('canvasimg');
+    }else{
+        console.log(canvasimg);
+    }
+
     updatePencilWidth(pencilWidth);
     calculateArea();
     resizeCanvas();
-
+    pasteImage();
 }
 
 function calculateArea() {
@@ -147,11 +153,9 @@ function calculateArea() {
 
 function resizeCanvas() {
     calculateArea();
-    draw();
 }
 
-function updatePencilWidth(value) {
-    pencilWidth = value;
+function updatePencilWidth(pencilWidth) {
     $('.actualsize').width(pencilWidth)
         .height(pencilWidth)
         .css({'background-color': '#' + color});
@@ -160,7 +164,6 @@ function updatePencilWidth(value) {
 
 function getPosition(action, e) {
     if (action == 'down') {
-
         me.prevX = currX;
         me.prevY = currY;
         me.posX = e.clientX - canvas.offsetLeft;
@@ -173,6 +176,7 @@ function getPosition(action, e) {
 
         flag = true;
         dot_flag = true;
+
         if (dot_flag) {
             canvasActions.beginPath();
             canvasActions.fillStyle = color;
@@ -184,53 +188,45 @@ function getPosition(action, e) {
     if (action == 'up' || action == "out") {
         flag = false;
     }
+
     if (action == 'move') {
         if (flag) {
             me.prevX = currX;
             me.prevY = currY;
             me.posX = e.clientX - canvas.offsetLeft;
             me.posY = e.clientY - nav - canvas.offsetTop;
+            prevX = currX;
+            prevY = currY;
+            currX = e.clientX - canvas.offsetLeft;
+            currY = e.clientY - nav - canvas.offsetTop;
+            socket.emit('drawing', {mouseEvents});
         }
-
-        prevX = currX;
-        prevY = currY;
-        currX = e.clientX - canvas.offsetLeft;
-        currY = e.clientY - nav - canvas.offsetTop;
-        draw();
     }
 
 }
 
-function draw() {
-    /*canvasActions.beginPath();
-    canvasActions.moveTo(prevX, prevY);
-    canvasActions.lineTo(currX, currY);
-    canvasActions.strokeStyle = color;
-    canvasActions.lineWidth = pencilWidth;
+socket.on('update canvas', function (draw) {
+    console.log(draw);
+    var e = draw.mouseEvents;
+    canvasActions.beginPath();
+    canvasActions.moveTo(e.prevX, e.prevY);
+    canvasActions.lineTo(e.posX, e.posY);
+    canvasActions.strokeStyle = e.color;
+    canvasActions.lineWidth = e.pencilWidth;
     canvasActions.stroke();
-    canvasActions.closePath();*/
-}
+    canvasActions.closePath();
+});
 
 
-function updateCanvas() {
-    socket.on('update canvas', function (draw) {
-        console.log(draw);
-        var e = draw.mouseEvents;
-        canvasActions.beginPath();
-        canvasActions.moveTo(e.prevX, e.prevY);
-        canvasActions.lineTo(e.posX, e.posY);
-        canvasActions.strokeStyle = e.color;
-        canvasActions.lineWidth = e.pencilWidth;
-        canvasActions.stroke();
-        canvasActions.closePath();
-        $('.footer').append('draw.posX: ' + e.posX);
-    });
-}
+socket.on('paste img', function (img) {
+    $(canvasimg).attr('src', img);
+    console.log(canvasimg);
+    canvasActions.drawImage(canvasimg, 0, 0);
+});
 
 
 function pasteImage() {
-    var img = document.getElementById("canvasimg");
-    canvasActions.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+    socket.emit('load image');
 }
 
 function erase() {
@@ -248,9 +244,4 @@ function save() {
     document.getElementById("canvasimg").style.display = "inline";
 }
 
-socket.on('load image', function (img) {
-    console.log('load image triggered');
-    console.log(img);
-    $('#canvasimg').attr('src', img);
-});
 

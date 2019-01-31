@@ -2,13 +2,14 @@ var models = require('./models'),
     Schema = models.Schema;
 
 var mouseEvents = new Schema({
-    usuario: String,
+    prevX: Number,
+    prevY: Number,
     posX: Number,
     posY: Number,
     enabled: Boolean,
     color: String,
-    pencilWidth: Number
-
+    pencilWidth: Number,
+    drawing: false,
 });
 
 

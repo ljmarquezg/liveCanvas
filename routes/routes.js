@@ -1,5 +1,5 @@
 var usuario = require('../controllers/usuario');
-var path = require('path');
+var passport = require('passport');
 var fileUpload = require('express-fileupload');
 var rutas = function (app) {
 
@@ -27,7 +27,7 @@ var rutas = function (app) {
     app.get('/canvas', function (req, res) {
         console.log(req.body);
         checkAuthenticated(req, res, 'index');
-    });
+      });
 
     app.get('/error', function (req, res) {
         res.send(req.session.flash.error[0]);
@@ -78,7 +78,7 @@ var rutas = function (app) {
     });
 
     function checkAuthenticated(req, res, url) {
-        if (req.isAuthenticated()) {
+        if (req.isAuthenticated() || req.session.passport.user !== undefined) {
             res.render(url, {
                 usuario: req.session.passport.user.nombre
             });

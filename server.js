@@ -33,11 +33,11 @@ var _ = require('lodash');
 var swig = require('swig');
 
 var usuarios = [];
-var clientes = {};
-//var mensajes = [];
+var imagenes = [];
+var databaseKeys = null;
+
 
 var Usuario = require('./models/usuarios');
-var Mensaje = require('./models/mensajes');
 var MouseEvents = require('./models/mouseEvents');
 /**************Configuración**************/
 
@@ -58,10 +58,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Necesario para la gestión de las variables de sesión
-app.use(session({
+var sessionMiddleware = session({
     store: new RedisStore({}),
     secret: 'canvasapp'
-}));
+});
+app.use(sessionMiddleware);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -72,6 +73,7 @@ app.use(flash());
 passport.serializeUser(function (user, done) {
     console.log("Serialize: " + user);
     usuarios.push(user);
+    console.log(usuarios);
     done(null, user);
 });
 
@@ -110,29 +112,48 @@ function storeDrawing(usuario, mouseEvents) {
 
 }
 
-function storeMessages(usuario, mensaje) {
-    var objeto = new Mensaje({usuario: usuario, mensaje: mensaje});
-    objeto.save(function (err, mensaje) {
-        if (err) {
-            console.log(err);
-        }
-        console.log(mensaje);
-    });
+function deletedUser(match) {
+    console.log
 }
 
+
+io.use(function(socket, next){
+    sessionMiddleware(socket.request, socket.request.res, next)
+});
+
 io.on('connection', function (socket) {
+    var loggedUser  = socket.request.session.passport.user;
+    if (loggedUser !== undefined){
+        var userId = loggedUser._id;
+        console.log(socket.request.session.passport.user._id);
+    }else{
+        app.get('/', function(req, res){
+           res.render('/') ;
+        });
+    }
 
     socket.on('disconnect', function () {
-        console.log('user disconnected');
-        client.hdel("usuarios", socket.id);
+        /*client.hgetall("usuarios", function (err, usuarios) {
+            _.forEach(usuarios, function (x, y) {
+                console.log('user disconnected: ' + y + ' == ' + socket.id);
+                if (y === socket.id) {
+                    socket.broadcast.emit('user disconnected', usuarios);
+                    socket.emit(x);
+                    //client.hdel("usuarios", socket.id, deletedUser(socket.id));
+                }
+                //socket.emit('chat message', x);
+                //socket.broadcast.in(y).emit('chat message', msj);
+            })
+        });*/
+        client.hdel("usuarios", loggedUser._id);
+        console.log("Usuario desconectado: " + loggedUser._id);
     });
 
     socket.on('drawing', function (cords) {
-        console.log(cords);
         io.emit('update canvas', cords);
     });
 
-    socket.on('chat message', function (msj) {
+    /*socket.on('chat message', function (msj) {
         var match = /@([^@]+)@/.exec(msj.mensaje);
 
         if (match != null) {
@@ -150,33 +171,12 @@ io.on('connection', function (socket) {
             io.emit('chat message', msj);
             console.log(msj);
             storeMessages(msj.usuario, msj.mensaje);
-        }
-    });
+
+    });*/
 
     socket.on('new user', function (nombre) {
-        console.log(socket.id);
-
-        client.hset("usuarios", socket.id.toString(), nombre);
-        client.hgetall("usuarios", function (err, usuarios) {
-            io.emit('new user', usuarios);
-        });
-
-        //io.emit('show user', usuarios);
-
-        Mensaje.find({})
-            .exec(function (err, mensajes) {
-                if (err) {
-                    console.log(err);
-                }
-                ;
-                mensajes.forEach(function (mensaje, i) {
-                    socket.emit('chat message', mensaje);
-                });
-            });
-
-            //io.emit('show user', usuarios);
-            socket.broadcast.emit('show user', usuarios);
-
+        client.hset("usuarios", socket.request.session.passport.user._id, nombre);
+        socket.broadcast.emit('show user', usuarios);
     });
 
     socket.on('get gallery', function (gallery) {
@@ -200,7 +200,6 @@ io.on('connection', function (socket) {
                                 socket.emit(m);
                                 return m;
                             });
-                            console.log(list);
                             io.emit('get gallery', list);
                         }
                     });
@@ -209,13 +208,24 @@ io.on('connection', function (socket) {
         });
     });
 
-    socket.on('canvas img', function(img){
-        socket.emit('canvas img', img);
-        client.hset("canvasimg", socket.id.toString(), img);
-        client.hgetall("canvasimg", function (err, img) {
-            socket.emit('load image', img);
-            console.log(img)
+    socket.on('save img', function (img) {
+        client.hset("canvasimg", userId, img);
+    });
+
+    socket.on('load image', function () {
+        console.log('load image');
+
+        client.hgetall("canvasimg", function (err, key) {
+            _.forEach(key, function (url, key) {
+                console.log(url, key);
+                console.log(key + ' ==== ' + userId);
+                if (key == userId) {
+                    console.log('pastind image');
+                    io.emit('paste img', url)
+                }
+            });
         });
+
     });
 });
 
