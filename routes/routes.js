@@ -12,12 +12,8 @@ var rutas = function (app) {
         res.render('registro');
     });
 
-    app.get('/', function (req, res) {
-        if (req.isAuthenticated()) {
-            res.render('gallery');
-        } else {
-            res.render('login');
-        }
+    app.get('/login', function (req, res) {
+        checkAuthenticated(req, res, 'gallery')
     });
 
     app.get('/', function (req, res) {
@@ -25,12 +21,13 @@ var rutas = function (app) {
     });
 
     app.get('/canvas', function (req, res) {
-        console.log(req.body);
         checkAuthenticated(req, res, 'index');
-      });
+    });
 
     app.get('/error', function (req, res) {
-        res.send(req.session.flash.error[0]);
+        res.render('login', {
+            response: req.session.flash.error[0]
+        });
     });
 
     app.get('/gallery', function (req, res) {
@@ -38,7 +35,6 @@ var rutas = function (app) {
     });
 
     app.post('/registro', usuario.registro, function (req, res) {
-        console.log(req.files);
         res.redirect('/');
     });
 
@@ -67,25 +63,19 @@ var rutas = function (app) {
             uploadFileName = name + ext;
         }
 
-        req.on('data', function(chunk){
-            console.log(chunk);
-        });
-
         uploadFile.mv('./public/uploads/' + uploadFileName, function (err) {
             if (err) return res.status(500).send(err);
-            res.redirect('./canvas');
+            res.redirect('/gallery');
         });
     });
 
     function checkAuthenticated(req, res, url) {
         if (req.isAuthenticated() || req.session.passport.user !== undefined) {
             res.render(url, {
-                usuario: req.session.passport.user.nombre
+                usuario: req.session.passport.user
             });
         } else {
-            app.get('/', function (req, res) {
-                res.render('login');
-            });
+            res.redirect('/');
         }
     }
 };

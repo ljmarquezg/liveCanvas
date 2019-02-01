@@ -1,5 +1,6 @@
 $(document).ready(function () {
     socket.emit('get gallery');
+    socket.emit('new user');
 
     socket.on('get gallery', function (gallery) {
         var cards = '<div class="col s12 m4">';

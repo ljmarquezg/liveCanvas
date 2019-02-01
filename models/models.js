@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var database = 'prueba1';
+var database = 'canvas';
 mongoose.connect('mongodb://localhost/'+database);
-//mongoose.connect('mongodb://localhost/'+database);
 module.exports = mongoose;

@@ -29,7 +29,6 @@ let canvas = 0,
 
 $(window).on('load', function () {
     canvas = document.getElementById('canvas');
-
     if ($(canvas).length) {
         canvasActions = canvas.getContext("2d");
         canvasArea = $('.draw');
@@ -37,10 +36,9 @@ $(window).on('load', function () {
     }
 });
 
-
 //================ MOUSEEVENTS ===============
 
-$(document).on('mousedown', function (e) {
+$(document).on('mousedown', '#canvas', function (e) {
     var me = mouseEvents;
     me.prevX = e.clientX;
     me.prevY = e.clientY;
@@ -48,7 +46,6 @@ $(document).on('mousedown', function (e) {
     me.posY = me.prevY;
     me.enabled = true;
 });
-
 
 $(document).on('mousemove', '#canvas', function (e) {
     if (mouseEvents.enabled === true) {
@@ -60,9 +57,7 @@ $(document).on('mousemove', '#canvas', function (e) {
         me.color = color;
         me.pencilWidth = pencilWidth;
     }
-})
-;
-
+});
 
 $(document).on('mouseup', '#canvas', function (e) {
     me.prevX = e.clientX;
@@ -71,14 +66,11 @@ $(document).on('mouseup', '#canvas', function (e) {
     me.posY = me.prevY;
     me.drawing = false;
     me.enabled = false;
-
 });
-
 
 $(document).on('click', '#jscolortrigger', function () {
     document.getElementById('jscolor').jscolor.show();
 });
-
 
 //================= Functions ===============
 
@@ -117,7 +109,6 @@ function init() {
         });
         $(document).on("mouseout", canvas, function (e) {
             getPosition('out', e)
-            console.log("mouse out")
         });
     });
 
@@ -129,15 +120,16 @@ function init() {
         pasteImage();
     });
 
+    $(document).on('click', '.js-refresh', function () {
+        erase();
+    })
 
-    if ($('#canvasimg').length === 0){
+    if ($('#canvasimg').length === 0) {
         var img = document.createElement("img");
         img.setAttribute("id", "canvasimg");
         img.setAttribute("style", "display: none; opacity: 0; position: absolute; left: -100%");
         document.getElementById('main').appendChild(img);
         canvasimg = document.getElementById('canvasimg');
-    }else{
-        console.log(canvasimg);
     }
 
     updatePencilWidth(pencilWidth);
@@ -160,6 +152,18 @@ function updatePencilWidth(pencilWidth) {
         .height(pencilWidth)
         .css({'background-color': '#' + color});
     $('.pointervalue').html(pencilWidth);
+}
+
+function pasteImage() {
+    socket.emit('load image');
+}
+
+function erase() {
+    var restart = confirm("¿Desea eliminar los cambios?");
+    if (restart) {
+        canvasActions.clearRect(0, 0, canvasWidth, canvasHeight);
+        document.getElementById("canvasimg");
+    }
 }
 
 function getPosition(action, e) {
@@ -206,12 +210,18 @@ function getPosition(action, e) {
 }
 
 socket.on('update canvas', function (draw) {
-    console.log(draw);
     var e = draw.mouseEvents;
+    var updatecolor = e.color;
+
+    if (updatecolor !== undefined) {
+        if (updatecolor.substr(0, 1) !== '#') {
+            updatecolor = '#' + updatecolor;
+        }
+    }
     canvasActions.beginPath();
     canvasActions.moveTo(e.prevX, e.prevY);
     canvasActions.lineTo(e.posX, e.posY);
-    canvasActions.strokeStyle = e.color;
+    canvasActions.strokeStyle = updatecolor;
     canvasActions.lineWidth = e.pencilWidth;
     canvasActions.stroke();
     canvasActions.closePath();
@@ -220,28 +230,10 @@ socket.on('update canvas', function (draw) {
 
 socket.on('paste img', function (img) {
     $(canvasimg).attr('src', img);
-    console.log(canvasimg);
     canvasActions.drawImage(canvasimg, 0, 0);
 });
 
 
-function pasteImage() {
-    socket.emit('load image');
-}
 
-function erase() {
-    var m = confirm("Want to clear");
-    if (m) {
-        canvasActions.clearRect(0, 0, w, h);
-        document.getElementById("canvasimg").style.display = "none";
-    }
-}
-
-function save() {
-    document.getElementById("canvasimg").style.border = "2px solid";
-    var dataURL = canvas.toDataURL();
-    document.getElementById("canvasimg").src = dataURL;
-    document.getElementById("canvasimg").style.display = "inline";
-}
 
 

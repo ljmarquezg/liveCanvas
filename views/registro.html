@@ -1,40 +1,33 @@
 {% extends 'forms.html' %}
 
-{% block titulo %}
-Registro de usuarios
-{% endblock %}
+{% block titulo %}Registro de usuarios{% endblock %}
 
 {% block form %}
 <form role="form" action="/registro" method="POST" encType="multipart/form-data">
     <div class="form-group">
         <label for="nombre">Nombre Completo</label><input type="text" name="nombre" class="form-control"
-                                                                      id="nombre">
-    </div>
-    <div class="form-group">
-        <label for="email">Edad</label><input type="text" name="edad" class="form-control"
-                                                           id="email">
+                                                          id="nombre">
     </div>
     <div class="form-group">
         <label for="usuario">Nombre de usuario</label><input type="text" name="usuario" class="form-control"
-                                                                        id="usuario">
+                                                             id="usuario">
     </div>
     <div class="form-group">
         <label for="password">Password</label><input type="password" name="pass" class="form-control"
-                                                                  id="password">
+                                                     id="password">
     </div>
-
-    <div class="col m12">
-        <div class="file-field input-field">
-            <div class="btn">
-                <span>Subir Imagen</span>
-                <input type="file" name="uploadFile"/>
-            </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" name="file_path">
-            </div>
+    <div class="file-field input-field">
+        <div class="btn">
+            <span>Subir Imagen</span>
+            <input type="file" name="uploadFile"/>
+        </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" name="file_path">
         </div>
     </div>
-
     <button type="submit" class="btn btn-default">Submit</button>
 </form>
+<div class="form-group">
+    <br><p>Ya tienes cuenta registrada? <a href="/login">Inicia sesión</a></p>
+</div>
 {% endblock %}

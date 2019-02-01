@@ -16,7 +16,7 @@ exports.registro = function(req, res, next){
         uploadFileName = name + ext;
     }
 
-    uploadFile.mv('./public/uploads/' + uploadFileName, function (err) {
+    uploadFile.mv('./public/profiles/' + uploadFileName, function (err) {
         if (err) return res.status(500).send(err);
     });
 
@@ -25,11 +25,10 @@ exports.registro = function(req, res, next){
 		nombre : req.body.nombre,
 		usuario : req.body.usuario,
 		password : req.body.pass,
-		image: './uploads/' + uploadFileName
+		image: './profiles/' + uploadFileName
 	});
 
 	user.save(function (err, usuario){
-		console.log(usuario);
 		if (!err) {
 			res.status(201);
 			next();

@@ -1,8 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}
-Subir Imágen
-{% endblock %}
+{% block title %}Subir Imágen{% endblock %}
 
 {% block canvasmenu %}
 <li>
@@ -20,34 +18,42 @@ Subir Imágen
 {% endblock %}
 
 {% block content %}
+<div class="form">
+    <div class="container">
+        <div class="flex-item center-align">
+            <div class="row">
+                <div class="container">
+                    <div class="col s8 offset-s2">
+                        <h2 class="center">Seleccione una imágen para el fondo del canvas</h2>
+                        <form ref='uploadForm' id='uploadForm' action='/upload-form' method='post'
+                              encType="multipart/form-data">
+                            <div class="col m6">
+                                <div class="input-field">
+                                    <input placeholder="Cambiar nombre archivo" name="name" id="name" type="text"
+                                           class="validate">
+                                    <label for="name">Nombre de archivo</label>
+                                </div>
+                            </div>
 
-<div class="container">
-    <div class="row">
-        <h2 class="center">Seleccione una imágen para el fondo de pantalla</h2>
-        <form ref='uploadForm' id='uploadForm' action='/upload-form' method='post' encType="multipart/form-data">
+                            <div class="col m6">
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <span>File</span>
+                                        <input type="file" name="uploadFile"/>
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text" name="file_path">
+                                    </div>
+                                </div>
+                            </div>
 
-            <div class="input-field col s6">
-                <input placeholder="Cambiar nombre archivo" name="name" id="name" type="text" class="validate">
-                <label for="name">Nombre de archivo</label>
-            </div>
-
-            <div class="col m6">
-                <div class="file-field input-field">
-                    <div class="btn">
-                        <span>File</span>
-                        <input type="file" name="uploadFile"/>
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text" name="file_path">
+                            <button class="btn waves-effect waves-light right" type="submit" name="action">Cargar Imagen
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <button class="btn waves-effect waves-light right" type="submit" name="action">Cargar Imagen
-            </button>
-        </form>
-
-
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,25 +1,25 @@
 {% extends 'layout.html' %}
 
-{% block title %}
-Gallery
-{% endblock %}
+{% block title %}Gallery{% endblock %}
 
 {% block canvasmenu %}
 <li>
     <a href="/canvas">
-        <i class="material-icons left tooltipped"  data-position="bottom"
+        <i class="material-icons left tooltipped" data-position="bottom"
            data-tooltip="Ir a canvas">brush</i>
     </a>
 </li>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="center">Seleccione una imágen de fondo para el área de dibujo</h2>
-    <div id="gallery" class="row">
-        <!--gallery files-->
+<div class="overflow">
+    <div class="container">
+        <h2 class="center">Seleccione una imágen de fondo para el área de dibujo</h2>
+        <div id="gallery" class="row">
+            <!--gallery files-->
+        </div>
+        <img id="canvasimg" src="">
     </div>
-    <img id="canvasimg" src="">
 </div>
 {% endblock %}
 

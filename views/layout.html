@@ -5,8 +5,8 @@
 <div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper blue-grey darken-4">
-            <a href="#!" class="brand-logo"><i class="material-icons">cloud</i>Logo</a>
-            <ul class="right hide-on-med-and-down">
+            <a href="#!" data-target="slide-out" class="sidenav-trigger brand-logo"><i class="material-icons">menu</i>Canvas</a>
+            <ul class="right">
                 {% block canvasmenu %}
                 {% endblock %}
                 <li>
@@ -23,6 +23,15 @@
         </div>
     </nav>
 </div>
+
+<ul id="slide-out" class="sidenav">
+    <h4>Usuarios activos</h4>
+    <div id="user-list"></div>
+    <li class="separator">
+        <div class="divider"></div>
+    </li>
+    <li><a class="waves-effect sidenav-close" href="#!">Cerrar menú</a></li>
+</ul>
 
 {% block content %}
 

@@ -1,28 +1,26 @@
 {% extends 'main.html' %}
-
-
 {% block layoutcontent %}
-<div class="container">
+<div class="form">
+    <div class="container">
+        <div class="flex-item center-align">
+            <div class="row clearfix">
+                <div class="col m12">
+                    <h2 class="center">
+                        {% block titulo %}
 
-    <div class="row clearfix">
-        <div class="col m12">
-            <h2 class="center">
-                {% block titulo %}
+                        {% endblock %}
+                    </h2>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col m12">
+                    {% block form %}
 
-                {% endblock %}
-            </h2>
-        </div>
-    </div>
-    <div class="row clearfix">
-        <div class="col m2">
-        </div>
-        <div class="col m8">
-            {% block form %}
-
-            {% endblock %}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
